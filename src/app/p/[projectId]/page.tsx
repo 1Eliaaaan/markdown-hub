@@ -47,6 +47,13 @@ export default function WorkspacePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // Auto-collapse sidebar on mobile devices
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      setSidebarOpen(false);
+    }
+  }, []);
   const [showShare, setShowShare] = useState(false);
   const [showCreateItem, setShowCreateItem] = useState(false);
   const [createItemParent, setCreateItemParent] = useState<string | null>(null);

@@ -11,6 +11,8 @@ import {
   AlertCircle,
   FilePlus,
   FolderPlus,
+  PanelLeft,
+  PanelLeftClose,
 } from 'lucide-react';
 import type { Project, Item, ShareLink } from '@/lib/supabase';
 import { buildTree } from '@/lib/supabase';
@@ -45,6 +47,14 @@ export default function SharedPage() {
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved'>('saved');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      setSidebarOpen(false);
+    }
+  }, []);
+
   const [showCreateItem, setShowCreateItem] = useState(false);
   const [createItemParent, setCreateItemParent] = useState<string | null>(null);
   const [createItemType, setCreateItemType] = useState<'file' | 'folder'>('file');
@@ -258,7 +268,7 @@ export default function SharedPage() {
       </div>
 
       {/* Sidebar */}
-      <aside className="workspace__sidebar" style={{ top: 36 }}>
+      <aside className={`workspace__sidebar ${sidebarOpen ? '' : 'workspace__sidebar--collapsed'}`} style={{ top: 36 }}>
         <div className="workspace__sidebar-header">
           <button className="btn-icon" onClick={() => router.push('/')} title="Go home">
             <ArrowLeft size={18} />
@@ -298,7 +308,17 @@ export default function SharedPage() {
         )}
       </aside>
 
-      {/* Main */}
+      {/* Sidebar toggle */}
+      <button
+        className="workspace__sidebar-toggle"
+        style={{ top: 50 }}
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+      >
+        {sidebarOpen ? <PanelLeftClose size={16} /> : <PanelLeft size={16} />}
+      </button>
+
+      {/* Main content */}
       <main className="workspace__main" style={{ marginTop: 36 }}>
         {selectedItem ? (
           <>
