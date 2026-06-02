@@ -485,6 +485,7 @@ img { max-width: 100%; display: block; }
 .workspace {
   display: flex;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   background: var(--bg-deep);
 }
@@ -1088,6 +1089,7 @@ img { max-width: 100%; display: block; }
 /* ───────────────────────── HOME PAGE ───────────────────────── */
 .home {
   height: 100vh;
+  height: 100dvh;
   overflow-y: auto;
   background: var(--bg-deep);
   position: relative;
@@ -1307,6 +1309,7 @@ img { max-width: 100%; display: block; }
 }
 .workspace-loading {
   height: 100vh;
+  height: 100dvh;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 16px;
   color: var(--text-muted);

@@ -66,7 +66,11 @@ export default function MarkdownEditor({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (readOnly) setViewMode('preview');
+    if (readOnly) {
+      setViewMode('preview');
+    } else if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      setViewMode('editor');
+    }
   }, [readOnly]);
 
   const insertFormat = useCallback(
