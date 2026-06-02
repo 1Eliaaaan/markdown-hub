@@ -1,11 +1,32 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+let _supabase: SupabaseClient | null = null;
 
-export const supabase = supabaseUrl
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : (null as unknown as ReturnType<typeof createClient>);
+function getSupabase(): SupabaseClient {
+  if (!_supabase) {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!url || !key) {
+      throw new Error(
+        'Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY. ' +
+        'Set them in your Vercel dashboard: Settings → Environment Variables.'
+      );
+    }
+    _supabase = createClient(url, key);
+  }
+  return _supabase;
+}
+
+// Proxy so existing code like `supabase.from('table')` works without changes.
+// The actual client is only created when a property is first accessed (lazy init).
+export const supabase = new Proxy({} as SupabaseClient, {
+  get(_target, prop) {
+    const client = getSupabase();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const value = (client as any)[prop];
+    return typeof value === 'function' ? value.bind(client) : value;
+  },
+});
 
 // Types
 export interface Project {
